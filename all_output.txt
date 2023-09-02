@@ -1,0 +1,157 @@
+Let's start by creating the basic structure of the project. We will need the following files:
+
+- `public/index.html`: This will be the main HTML file that will contain the structure of our quiz app.
+- `public/main.js`: This will contain the JavaScript code for our quiz app.
+- `public/style.css`: This will contain the CSS styles for our quiz app.
+- `server.js`: This will be our Express server that will serve our static files.
+- `package.json`: This will contain the metadata of our project like the project's dependencies.
+
+Let's start by creating the `package.json` file. We will need `express` as a dependency.
+
+package.json
+
+```json
+{
+  "name": "swedish-phonetic-alphabet-quiz",
+  "version": "1.0.0",
+  "description": "A quiz app to learn the Swedish phonetic alphabet",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
+```
+
+Now, let's create our `server.js` file.
+
+server.js
+
+```js
+const express = require("express");
+const path = require("path");
+const app = express();
+const port = 8080;
+
+app.use(express.static(path.join(__dirname, "public")));
+
+app.listen(port, () => {
+  console.log(`Server is running on http://localhost:${port}`);
+});
+```
+
+Next, let's create our `public/index.html` file.
+
+public/index.html
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Swedish Phonetic Alphabet Quiz</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>Swedish Phonetic Alphabet Quiz</h1>
+  <div id="quiz-container">
+    <div id="question-container">
+      <h2 id="question"></h2>
+    </div>
+    <div id="answer-container">
+      <input type="text" id="answer" placeholder="Type your answer here">
+      <button id="submit">Submit</button>
+    </div>
+    <div id="result-container">
+      <h3 id="result"></h3>
+    </div>
+  </div>
+  <script src="main.js"></script>
+</body>
+</html>
+```
+
+Now, let's create our `public/style.css` file.
+
+public/style.css
+
+```css
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #f0f0f0;
+}
+
+#quiz-container {
+  text-align: center;
+}
+
+#answer-container {
+  margin-top: 20px;
+}
+
+#answer {
+  padding: 10px;
+  width: 200px;
+}
+
+#submit {
+  margin-left: 10px;
+  padding: 10px 20px;
+}
+
+#result-container {
+  margin-top: 20px;
+}
+```
+
+Finally, let's create our `public/main.js` file.
+
+public/main.js
+
+```js
+const questionElement = document.getElementById('question');
+const answerElement = document.getElementById('answer');
+const submitButton = document.getElementById('submit');
+const resultElement = document.getElementById('result');
+
+const alphabet = {
+  'A': 'Adam',
+  'B': 'Bertil',
+  'C': 'Caesar',
+  // Add the rest of the alphabet here
+};
+
+let currentLetter = '';
+
+function generateQuestion() {
+  const letters = Object.keys(alphabet);
+  currentLetter = letters[Math.floor(Math.random() * letters.length)];
+  questionElement.innerText = `What is the word for the letter ${currentLetter}?`;
+}
+
+function checkAnswer() {
+  const answer = answerElement.value.trim();
+  if (answer.toLowerCase() === alphabet[currentLetter].toLowerCase()) {
+    resultElement.innerText = 'Correct!';
+  } else {
+    resultElement.innerText = `Wrong! The correct answer is ${alphabet[currentLetter]}.`;
+  }
+  answerElement.value = '';
+  generateQuestion();
+}
+
+submitButton.addEventListener('click', checkAnswer);
+
+generateQuestion();
+```
+
+This JavaScript code will generate a random question asking for the word corresponding to a letter in the Swedish phonetic alphabet. When the user submits an answer, it will check if the answer is correct and display a message accordingly. Then, it will generate a new question.
